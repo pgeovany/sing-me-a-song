@@ -11,6 +11,7 @@ const config: Config = {
     'repositories',
     'jestGlobalMocks.ts',
     '<rootDir>/src/server.ts',
+    '<rootDir>/src/database.ts',
     '<rootDir>/src/utils',
     '<rootDir>/src/config',
     '<rootDir>/tests/factories',
