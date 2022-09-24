@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/src/server.js",
     "dev": "nodemon ./src/server.ts",
-    "test:unit": "dotenv -e .env.test jest -- -i --coverage --testPathPattern=tests/unit"
+    "test:unit": "jest -i --coverage --testPathPattern=tests/unit"
   },
   "keywords": [],
   "author": "",
