@@ -1,6 +1,7 @@
 import { recommendationService } from '../../src/services/recommendationsService';
 import { recommendationRepository } from '../../src/repositories/recommendationRepository';
 import recommendationFactory from '../factories/recomendationFactory';
+import { notFoundError } from '../../src/utils/errorUtils';
 
 describe('Unit tests for recomendations service insert function', () => {
   it('Should create a recomendation', async () => {
@@ -148,5 +149,69 @@ describe('Unit tests for recommendation service getTop function', () => {
     await recommendationService.getTop(10);
 
     expect(recommendationRepository.getAmountByScore).toBeCalled();
+  });
+});
+
+describe('Unit tests for recommendation service getRandom function', () => {
+  it('Should get random recomendations', async () => {
+    jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce([
+      {
+        id: 1,
+        name: '',
+        youtubeLink: '',
+        score: 0,
+      },
+    ]);
+
+    await recommendationService.getRandom();
+
+    expect(recommendationRepository.findAll).toBeCalled();
+  });
+
+  it('Should return not found if no recommendations are found', async () => {
+    jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce([]);
+
+    const promise = recommendationService.getRandom();
+
+    expect(recommendationRepository.findAll).toBeCalled();
+    await expect(promise).rejects.toEqual(notFoundError());
+  });
+
+  it('Should return a recommendation with a score greater than 10', async () => {
+    jest.spyOn(Math, 'random').mockImplementationOnce((): number => {
+      return 0.5;
+    });
+
+    jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce([
+      {
+        id: 1,
+        name: '',
+        youtubeLink: '',
+        score: 12,
+      },
+    ]);
+
+    await recommendationService.getRandom();
+
+    expect(recommendationRepository.findAll).toBeCalled();
+  });
+
+  it('Should return a recommendation with a score between -5 and 10', async () => {
+    jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce([
+      {
+        id: 1,
+        name: '',
+        youtubeLink: '',
+        score: 7,
+      },
+    ]);
+
+    jest.spyOn(Math, 'random').mockImplementationOnce((): number => {
+      return 0.8;
+    });
+
+    await recommendationService.getRandom();
+
+    expect(recommendationRepository.findAll).toBeCalled();
   });
 });
