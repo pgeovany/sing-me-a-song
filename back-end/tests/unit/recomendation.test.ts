@@ -138,3 +138,15 @@ describe('Unit tests for recommendation service get function', () => {
     expect(recommendationRepository.findAll).toBeCalled();
   });
 });
+
+describe('Unit tests for recommendation service getTop function', () => {
+  it('Should get top recomendations', async () => {
+    jest
+      .spyOn(recommendationRepository, 'getAmountByScore')
+      .mockImplementationOnce((): any => {});
+
+    await recommendationService.getTop(10);
+
+    expect(recommendationRepository.getAmountByScore).toBeCalled();
+  });
+});
