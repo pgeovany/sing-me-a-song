@@ -1,7 +1,6 @@
 import { recommendationService } from '../../src/services/recommendationsService';
 import { recommendationRepository } from '../../src/repositories/recommendationRepository';
 import recommendationFactory from '../factories/recomendationFactory';
-import { notFoundError } from '../../src/utils/errorUtils';
 
 describe('Unit tests for recomendations service insert function', () => {
   it('Should create a recomendation', async () => {
@@ -174,7 +173,7 @@ describe('Unit tests for recommendation service getRandom function', () => {
     const promise = recommendationService.getRandom();
 
     expect(recommendationRepository.findAll).toBeCalled();
-    await expect(promise).rejects.toEqual(notFoundError());
+    await expect(promise).rejects.toEqual({ type: 'not_found', message: '' });
   });
 
   it('Should return a recommendation with a score greater than 10', async () => {
