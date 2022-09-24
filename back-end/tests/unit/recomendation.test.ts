@@ -168,12 +168,15 @@ describe('Unit tests for recommendation service getRandom function', () => {
   });
 
   it('Should return not found if no recommendations are found', async () => {
-    jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce([]);
+    jest
+      .spyOn(recommendationRepository, 'findAll')
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]);
 
     const promise = recommendationService.getRandom();
 
     expect(recommendationRepository.findAll).toBeCalled();
-    await expect(promise).rejects.toEqual({ type: 'not_found', message: '' });
+    expect(promise).rejects.toEqual({ type: 'not_found', message: '' });
   });
 
   it('Should return a recommendation with a score greater than 10', async () => {
