@@ -126,3 +126,15 @@ describe('Unit tests for recommendation service downvote function', () => {
     expect(recommendationRepository.remove).toBeCalled();
   });
 });
+
+describe('Unit tests for recommendation service get function', () => {
+  it('Should get all recomendations', async () => {
+    jest
+      .spyOn(recommendationRepository, 'findAll')
+      .mockImplementationOnce((): any => {});
+
+    await recommendationService.get();
+
+    expect(recommendationRepository.findAll).toBeCalled();
+  });
+});
