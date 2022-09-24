@@ -66,3 +66,63 @@ describe('Unit tests for recommendation service upvote function', () => {
     expect(promise).rejects.toEqual({ type: 'not_found', message: '' });
   });
 });
+
+describe('Unit tests for recommendation service downvote function', () => {
+  it('Should downvote a recommendation', async () => {
+    jest.spyOn(recommendationRepository, 'find').mockResolvedValueOnce({
+      id: 1,
+      name: '',
+      youtubeLink: '',
+      score: 0,
+    });
+
+    jest.spyOn(recommendationRepository, 'updateScore').mockResolvedValueOnce({
+      id: 1,
+      name: '',
+      youtubeLink: '',
+      score: -1,
+    });
+
+    jest.spyOn(recommendationRepository, 'remove');
+
+    await recommendationService.downvote(1);
+
+    expect(recommendationRepository.find).toBeCalled();
+    expect(recommendationRepository.updateScore).toBeCalled();
+    expect(recommendationRepository.remove).not.toBeCalled();
+  });
+
+  it('Should not downvote a recommendation that does not exists', async () => {
+    jest.spyOn(recommendationRepository, 'find').mockResolvedValueOnce(null);
+
+    const promise = recommendationService.downvote(1);
+
+    expect(promise).rejects.toEqual({ type: 'not_found', message: '' });
+  });
+
+  it('Should delete a recommendation that has a score lower than -5 after being downvoted', async () => {
+    jest.spyOn(recommendationRepository, 'find').mockResolvedValueOnce({
+      id: 1,
+      name: '',
+      youtubeLink: '',
+      score: -5,
+    });
+
+    jest.spyOn(recommendationRepository, 'updateScore').mockResolvedValueOnce({
+      id: 1,
+      name: '',
+      youtubeLink: '',
+      score: -6,
+    });
+
+    jest
+      .spyOn(recommendationRepository, 'remove')
+      .mockImplementationOnce((): any => {});
+
+    await recommendationService.downvote(1);
+
+    expect(recommendationRepository.find).toBeCalled();
+    expect(recommendationRepository.updateScore).toBeCalled();
+    expect(recommendationRepository.remove).toBeCalled();
+  });
+});
