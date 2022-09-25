@@ -139,3 +139,12 @@ describe('GET /recommendations/random', () => {
     expect(result.body).toEqual(recommendation);
   });
 });
+
+describe('GET /recommendations/top/:amount', () => {
+  it('Should return status 200 and an array of recommendations', async () => {
+    const result = await agent.get(`/recommendations/top/${10}`);
+
+    expect(result.status).toEqual(200);
+    expect(result.body).toBeInstanceOf(Array);
+  });
+});
