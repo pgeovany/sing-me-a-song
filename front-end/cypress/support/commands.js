@@ -23,3 +23,11 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('resetDatabase', () => {
+  cy.request('POST', 'http://localhost:5000/reset-database');
+});
+
+Cypress.Commands.add('seedDatabase', () => {
+  cy.request('POST', 'http://localhost:5000/seed-database');
+});
