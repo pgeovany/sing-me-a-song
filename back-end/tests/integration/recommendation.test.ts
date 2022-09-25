@@ -44,3 +44,12 @@ describe('POST /recommendations', () => {
     expect(result.status).toEqual(409);
   });
 });
+
+describe('GET /recommendations', () => {
+  it('Should return status 200 and an array of recommendations', async () => {
+    const result = await agent.get('/recommendations');
+
+    expect(result.status).toEqual(200);
+    expect(result.body).toBeInstanceOf(Array);
+  });
+});
