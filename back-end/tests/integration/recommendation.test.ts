@@ -71,6 +71,54 @@ describe('POST /recommendations/:id/upvote', () => {
   });
 });
 
+describe('POST /recommendations/:id/downvote', () => {
+  it('Should return status 200 given a recommendation id that exists in the database', async () => {
+    const recommendation = recommendationFactory();
+
+    await prisma.recommendation.create({
+      data: recommendation,
+    });
+
+    const createdRecommendation = await prisma.recommendation.findUnique({
+      where: { name: recommendation.name },
+    });
+
+    const result = await agent.post(
+      `/recommendations/${createdRecommendation.id}/downvote`
+    );
+
+    expect(result.status).toEqual(200);
+  });
+
+  it('Should return status 404 given a recommendation id that does not exist', async () => {
+    const result = await agent.post(`/recommendations/${0}/downvote`);
+
+    expect(result.status).toEqual(404);
+  });
+
+  it('Should delete a recommendation that has a score lower than -5', async () => {
+    const recommendation = recommendationFactory();
+
+    await prisma.recommendation.create({
+      data: recommendation,
+    });
+
+    const createdRecommendation = await prisma.recommendation.findUnique({
+      where: { name: recommendation.name },
+    });
+
+    for (let i = 0; i < 6; i++) {
+      await agent.post(`/recommendations/${createdRecommendation.id}/downvote`);
+    }
+
+    const result = await prisma.recommendation.findUnique({
+      where: { id: createdRecommendation.id },
+    });
+
+    expect(result).toBeFalsy();
+  });
+});
+
 describe('GET /recommendations', () => {
   it('Should return status 200 and an array of recommendations', async () => {
     const result = await agent.get('/recommendations');
