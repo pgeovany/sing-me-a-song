@@ -2,6 +2,7 @@ import prisma from '../../src/database';
 import supertest from 'supertest';
 import app from '../../src/app';
 import recommendationFactory from '../factories/recommendationFactory';
+import generateValidRecommendation from './generateValidRecommendation';
 
 const agent = supertest(app);
 
@@ -45,18 +46,10 @@ describe('POST /recommendations', () => {
 
 describe('POST /recommendations/:id/upvote', () => {
   it('Should return status 200 given a recommendation id that exists in the database', async () => {
-    const recommendation = recommendationFactory();
-
-    await prisma.recommendation.create({
-      data: recommendation,
-    });
-
-    const createdRecommendation = await prisma.recommendation.findUnique({
-      where: { name: recommendation.name },
-    });
+    const recommendation = await generateValidRecommendation();
 
     const result = await agent.post(
-      `/recommendations/${createdRecommendation.id}/upvote`
+      `/recommendations/${recommendation.id}/upvote`
     );
 
     expect(result.status).toEqual(200);
@@ -71,18 +64,10 @@ describe('POST /recommendations/:id/upvote', () => {
 
 describe('POST /recommendations/:id/downvote', () => {
   it('Should return status 200 given a recommendation id that exists in the database', async () => {
-    const recommendation = recommendationFactory();
-
-    await prisma.recommendation.create({
-      data: recommendation,
-    });
-
-    const createdRecommendation = await prisma.recommendation.findUnique({
-      where: { name: recommendation.name },
-    });
+    const recommendation = await generateValidRecommendation();
 
     const result = await agent.post(
-      `/recommendations/${createdRecommendation.id}/downvote`
+      `/recommendations/${recommendation.id}/downvote`
     );
 
     expect(result.status).toEqual(200);
@@ -95,25 +80,17 @@ describe('POST /recommendations/:id/downvote', () => {
   });
 
   it('Should delete a recommendation that has a score lower than -5', async () => {
-    const recommendation = recommendationFactory();
-
-    await prisma.recommendation.create({
-      data: recommendation,
-    });
-
-    const createdRecommendation = await prisma.recommendation.findUnique({
-      where: { name: recommendation.name },
-    });
+    const recommendation = await generateValidRecommendation();
 
     await prisma.recommendation.update({
-      where: { id: createdRecommendation.id },
+      where: { id: recommendation.id },
       data: { score: -5 },
     });
 
-    await agent.post(`/recommendations/${createdRecommendation.id}/downvote`);
+    await agent.post(`/recommendations/${recommendation.id}/downvote`);
 
     const result = await prisma.recommendation.findUnique({
-      where: { id: createdRecommendation.id },
+      where: { id: recommendation.id },
     });
 
     expect(result).toBeFalsy();
