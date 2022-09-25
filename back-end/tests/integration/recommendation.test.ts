@@ -23,8 +23,6 @@ describe('POST /recommendations', () => {
       where: { name: recommendation.name },
     });
 
-    console.log(createdRecommendation);
-
     expect(result.status).toEqual(201);
     expect(createdRecommendation).not.toBeNull();
   });
@@ -107,9 +105,12 @@ describe('POST /recommendations/:id/downvote', () => {
       where: { name: recommendation.name },
     });
 
-    for (let i = 0; i < 6; i++) {
-      await agent.post(`/recommendations/${createdRecommendation.id}/downvote`);
-    }
+    await prisma.recommendation.update({
+      where: { id: createdRecommendation.id },
+      data: { score: -5 },
+    });
+
+    await agent.post(`/recommendations/${createdRecommendation.id}/downvote`);
 
     const result = await prisma.recommendation.findUnique({
       where: { id: createdRecommendation.id },
