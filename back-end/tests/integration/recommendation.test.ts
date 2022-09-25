@@ -106,7 +106,7 @@ describe('GET /recommendations', () => {
   });
 });
 
-describe('GET /recommendations/id', () => {
+describe('GET /recommendations/:id', () => {
   it('Should return status 200 and the recommendation for the provided id', async () => {
     const recommendation = await generateValidRecommendation();
 
@@ -120,5 +120,22 @@ describe('GET /recommendations/id', () => {
     const result = await agent.get(`/recommendations/${0}`);
 
     expect(result.status).toEqual(404);
+  });
+});
+
+describe('GET /recommendations/random', () => {
+  it('Should return status 404 if the recommendations table is empty', async () => {
+    const result = await agent.get('/recommendations/random');
+
+    expect(result.status).toEqual(404);
+  });
+
+  it('Should return status 200 and a recommendation if there is at least one in the database', async () => {
+    const recommendation = await generateValidRecommendation();
+
+    const result = await agent.get('/recommendations/random');
+
+    expect(result.status).toEqual(200);
+    expect(result.body).toEqual(recommendation);
   });
 });
