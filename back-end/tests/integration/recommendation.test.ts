@@ -45,6 +45,32 @@ describe('POST /recommendations', () => {
   });
 });
 
+describe('POST /recommendations/:id/upvote', () => {
+  it('Should return status 200 given a recommendation id that exists in the database', async () => {
+    const recommendation = recommendationFactory();
+
+    await prisma.recommendation.create({
+      data: recommendation,
+    });
+
+    const createdRecommendation = await prisma.recommendation.findUnique({
+      where: { name: recommendation.name },
+    });
+
+    const result = await agent.post(
+      `/recommendations/${createdRecommendation.id}/upvote`
+    );
+
+    expect(result.status).toEqual(200);
+  });
+
+  it('Should return status 404 given a recommendation id that does not exist', async () => {
+    const result = await agent.post(`/recommendations/${0}/upvote`);
+
+    expect(result.status).toEqual(404);
+  });
+});
+
 describe('GET /recommendations', () => {
   it('Should return status 200 and an array of recommendations', async () => {
     const result = await agent.get('/recommendations');
