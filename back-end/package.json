@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/src/server.js",
-    "dev": "nodemon ./src/server.ts",
+    "dev": "dotenv -e .env.test nodemon ./src/server.ts",
     "prisma-test": "dotenv -e .env.test npx prisma migrate dev",
     "test:unit": "jest -i --coverage --testPathPattern=tests/unit",
     "test:integration": "npm run prisma-test && dotenv -e .env.test -- jest -i --no-cache --coverage false --testPathPattern=tests/integration"
@@ -23,6 +23,7 @@
     "react-player": "^2.11.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.5.0",
     "@types/cors": "^2.8.12",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.14",
