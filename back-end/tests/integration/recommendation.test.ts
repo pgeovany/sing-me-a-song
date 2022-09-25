@@ -105,3 +105,20 @@ describe('GET /recommendations', () => {
     expect(result.body).toBeInstanceOf(Array);
   });
 });
+
+describe('GET /recommendations/id', () => {
+  it('Should return status 200 and the recommendation for the provided id', async () => {
+    const recommendation = await generateValidRecommendation();
+
+    const result = await agent.get(`/recommendations/${recommendation.id}`);
+
+    expect(result.status).toEqual(200);
+    expect(result.body).toEqual(recommendation);
+  });
+
+  it('Should return status 404 given an invalid recommendation id', async () => {
+    const result = await agent.get(`/recommendations/${0}`);
+
+    expect(result.status).toEqual(404);
+  });
+});
