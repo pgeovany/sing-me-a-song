@@ -28,6 +28,6 @@ Cypress.Commands.add('resetDatabase', () => {
   cy.request('POST', 'http://localhost:5000/reset-database');
 });
 
-Cypress.Commands.add('seedDatabase', () => {
-  cy.request('POST', 'http://localhost:5000/seed-database');
+Cypress.Commands.add('seedDatabase', (amount) => {
+  cy.request('POST', `http://localhost:5000/seed-database/${amount}`);
 });
