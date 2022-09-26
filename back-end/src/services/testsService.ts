@@ -6,8 +6,8 @@ async function reset() {
   await testsRepository.reset();
 }
 
-async function seed() {
-  for (let i = 1; i <= 10; i++) {
+async function seed(amount: number) {
+  for (let i = 1; i <= amount; i++) {
     const recommendation = {
       name: faker.lorem.words(10),
       youtubeLink: 'https://www.youtube.com/watch?v=FY5CAz6S9kE',

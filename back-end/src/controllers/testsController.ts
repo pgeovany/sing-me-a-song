@@ -8,7 +8,9 @@ async function reset(req: Request, res: Response) {
 }
 
 async function seed(req: Request, res: Response) {
-  await testsService.seed();
+  const { amount } = req.params;
+
+  await testsService.seed(Number(amount));
 
   res.sendStatus(200);
 }
