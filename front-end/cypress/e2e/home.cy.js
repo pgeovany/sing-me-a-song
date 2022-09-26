@@ -26,4 +26,16 @@ describe('Home screen', () => {
       expect(statusCode).to.eq(201);
     });
   });
+
+  it('Should upvote a recommendation', () => {
+    cy.seedDatabase(1);
+
+    cy.intercept('GET', '/recommendations').as('getRecommendations');
+
+    cy.visit('http://localhost:3000/');
+
+    cy.wait('@getRecommendations');
+
+    cy.get('[data-cy="upArrow"]').click();
+  });
 });
