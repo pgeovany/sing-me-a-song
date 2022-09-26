@@ -38,4 +38,16 @@ describe('Home screen', () => {
 
     cy.get('[data-cy="upArrow"]').click();
   });
+
+  it('Should downvote a recommendation', () => {
+    cy.seedDatabase(1);
+
+    cy.intercept('GET', '/recommendations').as('getRecommendations');
+
+    cy.visit('http://localhost:3000/');
+
+    cy.wait('@getRecommendations');
+
+    cy.get('[data-cy="downArrow"]').click();
+  });
 });
